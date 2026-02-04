@@ -1,5 +1,5 @@
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from pyscopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor
 
 table = "yt_api"
 
@@ -42,7 +42,7 @@ def create_table(schema):
             "Upload_Date" TIMESTAMP NOT NULL,
             "Duration" VARCHAR(20) NOT NULL,
             "Video_Views" INT,
-            "likes_Count" INT,
+            "Likes_Count" INT,
             "Comments_Count" INT
         );
         """
@@ -53,8 +53,9 @@ def create_table(schema):
             "Video_Title" TEXT NOT NULL,
             "Upload_Date" TIMESTAMP NOT NULL,
             "Duration" TIME NOT NULL,
+            "Video_Type" VARCHAR(10) NOT NULL,
             "Video_Views" INT,
-            "likes_Count" INT,
+            "Likes_Count" INT,
             "Comments_Count" INT
         );
         """
@@ -66,7 +67,7 @@ def get_video_ids(cur, schema):
     """
     Retrieves all video IDs from the specified schema and table.
     """
-    select_sql = f'SELECT "Video_ID" FROM {schema}.{table};'
+    cur.execute(f"""SELECT "Video_ID" FROM {schema}.{table};""")
     ids = cur.fetchall()
 
     video_ids = [row["Video_ID"] for row in ids]
